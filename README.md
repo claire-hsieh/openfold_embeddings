@@ -4,7 +4,7 @@
 
 ## Steps
 
-1. install openfold according to their [instructions](https://openfold.readthedocs.io/en/latest/Installation.html)
+1. clone and install openfold according to their [instructions](https://openfold.readthedocs.io/en/latest/Installation.html)
 
 2. download mmcif files (using openfold instructions)
 
@@ -13,13 +13,17 @@ bash scripts/download_mmseqs_dbs.sh data/    # downloads .tar files
 bash scripts/prep_mmseqs_dbs.sh data/        # unpacks and preps the databases
 ```
 
-3. run `openfold_embeddings.py -i input_dir -m mmcif_dir -a True`
+3. clone and install collabfold according to their [instructions](https://github.com/sokrypton/ColabFold)
+
+4. at the top of the `openfold_func.py` and `run_openfold.py` file add your openfold and collabfold dir paths
+
+5. run `openfold_embeddings.py -i input_dir -m mmcif_dir -a True`
 ```markdown
 ### Command Line Arguments
 
 - `-i`, `--input_dir`: Specifies the directory containing the input files to be processed.
 - `-m`, `--mmcif_dir`: Specifies the directory containing the mmCIF files required for processing.
-- `-a`, `--align`: A boolean flag (`True`/`False`) indicating whether to perform alignment during processing. (collabfold api)
+- `-a`, `--align`: A boolean flag (`True`/`False`) indicating whether to perform alignment during processing. (collabfold api`)
 ```
 
 
