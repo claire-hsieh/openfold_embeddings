@@ -7,11 +7,10 @@ import sys
 import subprocess
 import torch
 
+sys.path.append("your_dir/openfold/")
+sys.path.append("your_dir/ColabFold/")
 
-sys.path.append("/home/gluetown/butterfly/openfold/")
-sys.path.append("/home/gluetown/butterfly/ColabFold/")
 from colabfold.colabfold import run_mmseqs2
-
 from colabfold.utils import (
     ACCEPT_DEFAULT_TERMS,
     DEFAULT_API_SERVER,
