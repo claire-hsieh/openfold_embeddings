@@ -1,4 +1,4 @@
-from openfold_funcs import *
+from openfold_func import *
 import argparse
 import os
 from tqdm import tqdm
@@ -8,8 +8,8 @@ import subprocess
 import torch
 
 
-sys.path.append("your_dir/openfold/")
-sys.path.append("your_dir/ColabFold/")
+sys.path.append("/home/gluetown/butterfly/openfold/")
+sys.path.append("/home/gluetown/butterfly/ColabFold/")
 from colabfold.colabfold import run_mmseqs2
 
 from colabfold.utils import (
@@ -48,18 +48,25 @@ if __name__ == "__main__":
     ###########################
     ### INPUT - OUTPUT DIRS ###
     ###########################
+
     parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--input_dir", required=True, help="Input directory containing the data")
+    parser.add_argument("-m", "--mmCIF_dir", required=True, help="Directory containing mmCIF files")
+    parser.add_argument("-a", "--alignment", type=bool, required=True, help="Whether to compute alignments with ColabFold")
+    add_data_args(parser)    
     args = parser.parse_args()
 
-    parser.add_argument("-i", "--input_dir", required=True, help="Input directory containing the data")
-    parser.add_argument("-m", "--mmCIF_dir", required=True, help="directory containing mmcif files")
-    parser.add_argument("-a", "--alignment", required=True, help="Boolean: True if you want to compute aln with collabfold")
+    args.input_dir = "/home/gluetown/openfold_embeddings/test/"
+    args.mmCIF_dir = "/home/gluetown/butterfly/openfold/data/mmCIF/pdb_mmcif/mmcif_files/"
+    args.alignment = True
 
     input_dir = args.input_dir
     fasta_dir = input_dir + "fasta/"
     alignment_dir = input_dir + "alignment/"
     output_dir = input_dir + "step7_embeddings/"
     compute_alignments = args.alignment
+    os.makedirs(alignment_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
 
     ######################
     ### ADJUST OPTIONS ###
@@ -71,7 +78,7 @@ if __name__ == "__main__":
     user_agent: str = "user" # set your user name here
 
     ### Openfold settings
-    add_data_args(parser)
+    
     args.output_dir = output_dir
     args.use_precomputed_alignments = False
     args.config_preset = "model_1_ptm"
@@ -99,7 +106,6 @@ if __name__ == "__main__":
     # even though model training mode is off, still can't pass one of the 
     # assertions for model training when doing inference
 
-
     all_tag_list = []
     all_seq_list = []
     for fasta_file in list_files_with_extensions(fasta_dir, (".fasta", ".fa")):
@@ -120,6 +126,12 @@ if __name__ == "__main__":
     ##################
     ### Embeddings ###
     ##################
+    for fasta_file in os.listdir(fasta_dir):
+        with open(os.path.join(fasta_dir, fasta_file), "r") as file:
+            for record in SeqIO.parse(file, "fasta"):
+                protein_id = record.id
+                protein_dir = os.path.join(alignment_dir, protein_id)
+                os.makedirs(protein_dir, exist_ok=True)
 
     for protein in os.listdir(alignment_dir):
         ### Process fasta files
